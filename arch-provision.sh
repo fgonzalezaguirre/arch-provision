@@ -4,7 +4,7 @@
 sudo pacman -Sy
 
 # INSTALL REFLECTOR AND SELECT FASTEST MIRRORS
-sudo pacman -Sy reflector rsync curl
+sudo pacman -Sy reflector rsync curl --noconfirm --needed
 reflector --country 'United States' -l 5 --sort rate --save /etc/pacman.d/mirrorlist
 
 # INSTALL NETWORKING PACKAGES
@@ -43,7 +43,6 @@ echo
 PKGS=(
         'bluez'                 # Daemons for the bluetooth protocol stack
         'bluez-utils'           # Bluetooth development and debugging utilities
-        'bluez-firmware'        # Firmwares for Broadcom BCM203x and STLC2300 Bluetooth chips
         'blueman'             # Bluetooth configuration tool
 )
 
@@ -93,6 +92,7 @@ PKGS=(
     'linux-lts'             # Long term support kernel
     'linux-lts-headers'
     'linux-firmware'
+    'base-devel'
     
 
     # TERMINAL UTILITIES --------------------------------------------------
@@ -102,19 +102,15 @@ PKGS=(
     'gnome-keyring'         # System password storage
     'git'
     'gufw'                  # Firewall manager
-    'hardinfo'              # Hardware info app
     'htop'                  # Process viewer
     'inxi'                  # System information utility
     'jq'                    # JSON parsing library
-    'jshon'                 # JSON parsing library
     'neofetch'              # Shows system info when you launch terminal
     'ntp'                   # Network Time Protocol to set time via network.
     'openssh'               # SSH connectivity tools
     'p7zip'
     'rsync'                 # Remote file sync utility
-    'speedtest-cli'         # Internet speed via terminal
     'tar'
-    'terminus-font'         # Font package with some bigger fonts for login terminal
     'tlp'                   # Advanced laptop power management
     'unrar'                 # RAR compression program
     'unzip'                 # Zip compression program
@@ -125,7 +121,6 @@ PKGS=(
 
     # DISK UTILITIES ------------------------------------------------------
 
-    'autofs'                # Auto-mounter
     'exfat-utils'           # Mount exFat drives
     'ntfs-3g'               # Open source implementation of NTFS file system
     'parted'                # Disk utility
@@ -133,23 +128,15 @@ PKGS=(
 
     # GENERAL UTILITIES ---------------------------------------------------
 
-    'catfish'               # Filesystem search
     'conky'                 # System information viewer
-    'xfburn'                # CD burning application
 
     # DEVELOPMENT ---------------------------------------------------------
 
-    'atom'                  # Text editor
-    'apache'                # Apache web server
-    'clang'                 # C Lang compiler
     'cmake'                 # Cross-platform open-source make system
     'git'                   # Version control system
     'gcc'                   # C/C++ compiler
     'glibc'                 # C libraries
-    'nodejs'                # Javascript runtime environment
-    'npm'                   # Node package manager
     'python'                # Scripting language
-    'yarn'                  # Dependency management (Hyper needs this)
     'jdk-openjdk'
     'jre11-openjdk'
     'dotnet-sdk'
@@ -164,8 +151,6 @@ PKGS=(
 
     # COMMUNICATIONS ------------------------------------------------------
 
-    'hexchat'               # Multi format chat
-    'irssi'                 # Terminal based IIRC
 
     # MEDIA ---------------------------------------------------------------
 
@@ -185,13 +170,16 @@ PKGS=(
     # PRODUCTIVITY --------------------------------------------------------
 
     'libreoffice-fresh'     # Libre office with extra features
-    'xpdf'                  # PDF viewer
 
     # FLATPACK UTILITIES --------------------------------------------------
     
     'xdg-desktop-portal'
     'xdg-desktop-portal-kde'
     'xdg-desktop-portal-gtk'
+
+    # SECURITY
+    
+    'bitwarden'
     
     # VIRTUALIZATION ------------------------------------------------------
 
@@ -210,14 +198,24 @@ echo
 
 # INSTALL AUR SOFTWARE
 echo
-echo "INSTALLING AUR SOFTWARE"
+echo "INSTALLING YAY - AUR PACKAGE MANAGER"
 echo
 
-cd "${HOME}"
+mkdir /tmp/yay
+cd /tmp/yay
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si --noconfirm
+cd
+rm -rf /tmp/yay
 
-echo "CLOING: AURIC"
-git clone "https://github.com/rickellis/AURIC.git"
+echo
+echo "Done!"
+echo
 
+echo
+echo "INSTALLING AUR PACKAGES"
+echo
 
 PKGS=(
 
@@ -231,16 +229,11 @@ PKGS=(
     
     # TERMINAL UTILITIES --------------------------------------------------
 
-    'hyper'                     # Terminal emulator built on Electron
+    #'hyper'                     # Terminal emulator built on Electron
 
     # UTILITIES -----------------------------------------------------------
 
-    'synology-drive-client'
-    #TODO: BITWARDEN
-    'dropbox'                   # Cloud file storage
-    'enpass-bin'                # Password manager
-    'slimlock'                  # Screen locker
-    'oomox'                     # Theme editor
+    'synology-drive'
 
     # DEVELOPMENT ---------------------------------------------------------
 
@@ -255,7 +248,7 @@ PKGS=(
 
     # POST PRODUCTION -----------------------------------------------------
 
-    'peek'                      # GIF animation screen recorder
+    #'peek'                      # GIF animation screen recorder
 
     # COMMUNICATIONS ------------------------------------------------------
 
@@ -263,15 +256,13 @@ PKGS=(
 
     # THEMES --------------------------------------------------------------
 
-    'ttf-ms-fonts'
+    'ttf-ms-win10-auto'
+    'ttf-ms-win11-auto'
 )
 
 
-cd ${HOME}/AURIC
-chmod +x auric.sh
-
 for PKG in "${PKGS[@]}"; do
-    ./auric.sh -i $PKG
+    yay -S --noprovides --answerdiff None --answerclean None --mflags "--noconfirm" $PKG
 done
 
 echo
