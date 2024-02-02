@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jnlp codebase="http://cherry.dcs.aber.ac.uk/3dexperiment/" href="launch.jnlp" spec="1.0+">
+    <information>
+        <title>3DExperiment</title>
+        <vendor>bpt</vendor>
+        <homepage href=""/>
+        <description>3DExperiment</description>
+        <description kind="short">3DExperiment</description>
+    </information>
+
+<security>
+<all-permissions/>
+</security>
+    <resources>
+<j2se java-vm-args="-Xms800m -Xmx800m" version="1.5+"/>
+<jar eager="true" href="3DExperiment.jar" main="true"/>
+<jar href="swing-layout-1.0.4.jar"/>
+<jar href="FaceMorphLib.jar"/>
+<!--<extension name="jogl-all-awt" href="http://download.java.net/media/jogl/builds/archive/jsr-231-1.x-webstart-current/jogl.jnlp" /> -->
+<extension name="jogl" href="http://users.aber.ac.uk/bpt/jpsychomorph/version5/lib/jogl.jnlp"/>
+
+
+<!--     
+<extension name="jogl" href="http://download.java.net/media/jogl/builds/archive/jsr-231-webstart-current/jogl.jnlp"/> 
+<extension name="jogl-all-awt" href="http://download.java.net/media/jogl/jsr-231-2.x-webstart/jogl-all-awt.jnlp" /> 
+-->
+
+</resources>
+    <application-desc main-class="experiment.ExperimentSetup">
+</application-desc>
+</jnlp>

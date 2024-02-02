@@ -1,0 +1,370 @@
+---
+  - name: "Arch provisioning"
+    hosts: localhost
+    connection: local 
+    tasks:
+      - name: "pacman.conf | set color"
+        lineinfile:
+          path: /etc/pacman.conf
+          regexp: '^#Color'
+          line: Color
+        become: true
+
+      - name: "pacman.conf | set parallel downloads"
+        lineinfile:
+          path: /etc/pacman.conf
+          regexp: '^#ParallelDownloads = 5'
+          line: ParallelDownloads = 5
+        become: true
+
+      - name: "pacman.conf | enable multilib"
+        lineinfile:
+          dest: "/etc/pacman.conf"
+          state: "present"
+          line: "[multilib]"
+          regexp: "^\\[multilib\\]"
+          insertafter: "^#\\[multilib\\]"
+        become: true
+
+      - name: "pacman.conf | enable multilib (cont)"
+        lineinfile:
+          dest: "/etc/pacman.conf"
+          state: "present"
+          line: "Include = /etc/pacman.d/mirrorlist"
+          insertafter: "^\\[multilib\\]"
+          regexp: "Include = /etc/pacman.d/mirrorlist"
+        become: true
+
+      - name: "pacman | upgrade system"
+        community.general.pacman:
+          update_cache: true
+          upgrade: true
+        become: true
+
+      - name: "pacman | install basic utilities"
+        community.general.pacman:
+          name: 
+            - git
+            - rsync
+            - base-devel
+            - curl
+            - man
+            - man-db
+            - man-pages
+          state: present
+        become: true
+
+      - name: "reflector | install package"
+        community.general.pacman:
+          name: 
+            - reflector
+          state: present
+        become: true
+
+      - name: "reflector | run reflector and select fastest mirrors"
+        command:
+          cmd: "reflector --country 'United States' -l 5 --sort rate --save /etc/pacman.d/mirrorlist"
+        become: true
+
+      - name: "pacman | install network packages"
+        community.general.pacman:
+          name: 
+            - wpa_supplicant
+            - dialog
+            - networkmanager
+            - networkmanager-openvpn
+            - networkmanager-vpnc
+            - network-manager-applet
+            - nm-connection-editor
+            - dhclient
+            - libsecret
+            - ufw
+            - openssh
+          state: present
+        become: true
+
+
+      - name: "pacman | install bluetooth packages"
+        community.general.pacman:
+          name: 
+            - bluez
+            - bluez-utils
+            - blueman
+          state: present
+        become: true
+
+      - name: "pacman | install printer and driver packages"
+        community.general.pacman:
+          name: 
+            - cups
+            - cups-pdf
+            - ghostscript
+            - gsfonts
+          state: present
+        become: true
+
+      - name: "pacman | install kernel packages"
+        community.general.pacman:
+          name: 
+            - linux
+            - linux-firmware
+          state: present
+        become: true
+
+      - name: "pacman | install system utilities"
+        community.general.pacman:
+          name: 
+            - bitwarden
+            - openssh
+            - ntp
+            - rsync
+            - p7zip
+            - tar
+            - zip
+            - unzip
+            - unrar
+            - wget
+            - htop
+            - gufw
+            - jq
+            - less
+            - lshw
+            - tmux
+            - dmidecode
+            - hwinfo
+            - ncdu
+            - bind
+            - inetutils
+          state: present
+        become: true
+
+      - name: "pacman | install flatpak"
+        community.general.pacman:
+          name: 
+            - flatpak
+            - xdg-desktop-portal
+            - xdg-desktop-portal-kde
+            - xdg-desktop-portal-gtk
+          state: present
+        become: true
+
+      - name: "pacman | install terminal utilities"
+        community.general.pacman:
+          name: 
+            - bash-completion
+            - inxi
+            - neofetch
+            - fish
+          state: present
+        become: true
+
+      - name: "pacman | install disk utilities"
+        community.general.pacman:
+          name: 
+            - exfat-utils
+            - ntfs-3g
+            - parted
+            - gparted
+          state: present
+        become: true
+
+      - name: "pacman | install kde utilities"
+        community.general.pacman:
+          name: 
+            - ksnip
+            - kwallet5
+            - kwallet-pam
+            - kwalletmanager
+          state: present
+        become: true
+
+      - name: "pacman | install productivity utilities"
+        community.general.pacman:
+          name: 
+            - libreoffice-fresh
+            - okular
+            - evince
+            - thunderbird
+            - systray-x-kde
+            - hunspell
+            - hunspell-en_us
+            - hunspell-es_any
+            - hunspell-es_mx
+          state: present
+        become: true
+
+      - name: "pacman | install development tools"
+        community.general.pacman:
+          name: 
+            - dotnet-sdk
+            - python
+            - python-netaddr
+            - python-pip
+            - jdk-openjdk
+            - jdk8-openjdk
+            - vim
+            - go
+            - nodejs
+            - npm
+            - rust
+            - vagrant
+            - virtualbox-host-modules-arch
+            - virtualbox
+            - virtualbox-guest-iso
+          state: present
+        become: true
+
+      - name: "pacman | install web applications"
+        community.general.pacman:
+          name: 
+            - firefox-developer-edition
+          state: present
+        become: true
+
+      - name: "pacman | install graphics and design applications"
+        pacman:
+          name:
+            - gimp
+            - inkscape
+            - imagemagick
+            - krita
+          state: present
+        become: true
+
+      - name: "pacman | install media applications"
+        community.general.pacman:
+          name: 
+            - vlc
+            - kdenlive
+            - vdpauinfo
+            - libva-utils
+            - lximage-qt
+            - steam
+          state: present
+        become: true
+
+      - name: "pacman | install fonts"
+        community.general.pacman:
+          name: 
+            - noto-fonts
+            - noto-fonts-emoji
+            - ttf-liberation
+            - ttf-fira-code
+            - ttf-dejavu
+            - ttf-jetbrains-mono
+            - ttf-roboto
+          state: present
+        become: true
+
+      - name: "yay | create aur_builder user"
+        user: 
+          name: aur_builder
+          groups:
+            - wheel
+          password: '!'
+          system: true
+          create_home: true
+        become: yes
+
+
+      - name: "yay | add aur_builder to sudoers"
+        lineinfile:
+           path: /etc/sudoers.d/aur_builder-allow-to-sudo-pacman
+           state: present
+           line: "aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman"
+           validate: /usr/sbin/visudo -cf %s
+           create: yes
+        become: yes
+
+      - name: "yay | clone git repository"
+        git:
+          repo: https://aur.archlinux.org/yay-bin.git
+          dest: "/tmp/yay"
+          update: true
+
+      - name: "yay | make and install yay"
+        command:
+          chdir: "/tmp/yay"
+          cmd: "makepkg -sfi --noconfirm"
+          creates: /usr/bin/yay
+        become: true
+
+      - name: "yay | remove temporary directory"
+        file:
+          path: /tmp/yay
+          state: absent
+
+
+      - name: "aur | install system utilities"
+        kewlfft.aur.aur:
+          name:
+            - synology-drive
+            - pacseek
+            - isoimagewriter
+        become: yes
+        become_user: aur_builder
+
+      - name: "aur | install development utilities"
+        kewlfft.aur.aur:
+          name:
+            - visual-studio-code-bin
+            - jetbrains-toolbox
+            - icedtea-web
+            - vim-ansible
+        become: yes
+        become_user: aur_builder
+
+      - name: "aur | install media applications"
+        kewlfft.aur.aur:
+          name:
+            - spotify
+        become: yes
+        become_user: aur_builder
+
+      - name: "aur | install communication applications"
+        kewlfft.aur.aur:
+          name:
+            - skypeforlinux-stable-bin
+            - whatsie
+        become: yes
+        become_user: aur_builder
+      
+      - name: "fish | set as default shell in ~/.bashrc"
+        ansible.builtin.blockinfile:
+          path: ~/.bashrc
+          block: |
+            if [[ $(ps --no-header --pid=$PPID --format=comm) != "fish" && -z ${BASH_EXECUTION_STRING} ]]
+            then
+                shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=''
+                exec fish $LOGIN_OPTION
+            fi
+
+      - name: "systemd | enable services"
+        ansible.builtin.systemd:
+          name: "{{ item }}"
+          state: started
+          enabled: yes
+          masked: no
+        with_items:
+          - ntpd
+          - cups
+          - reflector
+        become: yes
+
+      - name: "java web start | configure jdk8 java.security"
+        copy:
+          src: jdk8/java.security
+          dest: /etc/java-8-openjdk/security/java.security
+        become: true
+
+      - name: "java web start | copy jnlp launcher script to /usr/local/bin"
+        copy:
+          src: jdk8/jnlp.sh
+          dest: /usr/local/bin/jnlp
+          owner: root
+          group: root
+          mode: '0755'
+        become: true
+
+      
+
